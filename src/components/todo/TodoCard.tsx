@@ -3,6 +3,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { Button } from "../ui/button";
 import { removeTodo, toggleComplete } from "@/redux/features/todoSlice";
 import { Trash2, Edit } from "lucide-react";
+import { useUpdateTodoMutation } from "@/redux/api/api";
 
 type Priority = "High" | "Medium" | "Low";
 
@@ -15,20 +16,30 @@ type TodoCardProps = {
 };
 
 const TodoCard: React.FC<TodoCardProps> = ({
-  id,
+  _id,
   title,
   description,
   isCompleted,
   priority,
 }) => {
-  const dispatch = useAppDispatch();
-
+  // const dispatch = useAppDispatch();
+  const [updateTodo, { isLoading, isSuccess }] = useUpdateTodoMutation();
   const handleToggleComplete = () => {
-    dispatch(toggleComplete(id));
+    const options = {
+      _id,
+      data: {
+        title,
+        description,
+        _id,
+        priority,
+        isCompleted: !isCompleted,
+      },
+    };
+    updateTodo(options);
   };
 
   const handleRemoveTodo = () => {
-    dispatch(removeTodo(id));
+    // dispatch(removeTodo(id));
   };
 
   const getPriorityColor = (priority: Priority) => {
